@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parikshit Gupta | Portfolio</title>
+    
+    <!-- React & ReactDOM (Standard versions) -->
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    
+    <!-- Babel (Compiles the code) -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Tailwind Config -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Manrope', 'sans-serif'] },
+                    animation: {
+                        'marquee': 'marquee 30s linear infinite',
+                    },
+                    keyframes: {
+                        marquee: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body { background-color: #0a0a0a; color: white; margin: 0; }
+        .text-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.1); color: transparent; transition: all 0.5s ease; }
+        .group:hover .text-stroke { -webkit-text-stroke: 1px rgba(255,255,255,0.8); color: white; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+        html { scroll-behavior: smooth; }
+        
+        #root { min-height: 100vh; }
+        .fallback-loading {
+            height: 100vh; display: flex; align-items: center; justify-content: center;
+            color: #666; font-family: sans-serif; background: #0a0a0a;
+        }
+    </style>
+</head>
+<body>
+    <div id="root">
+        <div class="fallback-loading">Loading...</div>
+    </div>
+
+    <script type="text/babel" data-presets="react">
+        try {
+            const { useState, useEffect, useRef } = React;
+
+            // --- Components ---
+
+            // Simplified Reveal: Just renders content directly, no hidden/fade animation
+            const Reveal = ({ children, className = "" }) => {
+                return <div className={className}>{children}</div>;
+            };
+
+            const Mail = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>);
+            const Linkedin = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>);
+            const MapPin = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>);
+            const Building = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><rect width="16" height="20" x="4" y="2" rx="2" ry="2"/><path d="M9 22v-4h6v4"/><path d="M8 6h.01"/><path d="M16 6h.01"/><path d="M12 6h.01"/><path d="M12 10h.01"/><path d="M12 14h.01"/><path d="M16 10h.01"/><path d="M16 14h.01"/><path d="M8 10h.01"/><path d="M8 14h.01"/></svg>);
+            const ChevronDown = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="m6 9 6 6 6-6"/></svg>);
+            const ArrowUpRight = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M7 7h10v10"/><path d="M7 17 17 7"/></svg>);
+            const Globe = ({ size = 24, className }) => (<svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"/><path d="M2 12h20"/></svg>);
+
+            const Navbar = () => {
+                const [scrolled, setScrolled] = useState(false);
+                useEffect(() => {
+                    const handleScroll = () => setScrolled(window.scrollY > 50);
+                    window.addEventListener('scroll', handleScroll);
+                    return () => window.removeEventListener('scroll', handleScroll);
+                }, []);
+                return (
+                    <nav className={`fixed top-0 left-0 w-full z-40 px-6 py-6 flex justify-between items-center transition-all duration-500 ${scrolled ? 'bg-neutral-950/80 backdrop-blur-md py-4 border-b border-white/5' : 'bg-transparent'}`}>
+                        <button onClick={() => window.scrollTo(0,0)} className="text-xl font-bold tracking-tight text-white focus:outline-none hover:opacity-80 transition-opacity z-50">PG<span className="text-blue-500">.</span></button>
+                        <div className="hidden md:flex gap-8 text-sm font-medium text-neutral-400 uppercase tracking-widest items-center">
+                            <a href="#about" className="hover:text-white transition-colors">About</a>
+                            <a href="#experience" className="hover:text-white transition-colors">Experience</a>
+                            <a href="https://www.linkedin.com/in/parikshit-gupta-44480357/" target="_blank" className="hover:text-white transition-colors"><Linkedin size={18} /></a>
+                        </div>
+                        <a href="#contact" className="group flex items-center gap-2 px-5 py-2 rounded-full border border-white/20 text-sm text-white hover:bg-white hover:text-black transition-all duration-300">
+                            Let's Talk <ArrowUpRight size={14} className="group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform"/>
+                        </a>
+                    </nav>
+                );
+            };
+
+            const Hero = () => {
+                return (
+                    <section id="about" className="relative min-h-screen flex flex-col justify-center pb-12 px-6 md:px-12 bg-neutral-950 text-white overflow-hidden">
+                        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-900/10 rounded-full blur-[120px] pointer-events-none" />
+                        <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-2 gap-16 items-center pt-20">
+                            <div className="order-2 lg:order-1">
+                                <Reveal>
+                                    <div className="flex items-center gap-3 mb-6">
+                                        <span className="w-12 h-[1px] bg-blue-500"></span>
+                                        <span className="text-blue-400 uppercase tracking-widest text-xs font-semibold">Goldman Sachs</span>
+                                    </div>
+                                </Reveal>
+                                <div className="overflow-hidden mb-8">
+                                    <Reveal delay={100}>
+                                        <h1 className="text-6xl md:text-8xl font-semibold tracking-tighter leading-[0.9]">Parikshit <br /><span className="text-neutral-600">Gupta</span></h1>
+                                    </Reveal>
+                                </div>
+                                <Reveal delay={200}>
+                                    <p className="max-w-md text-neutral-400 text-lg leading-relaxed border-l border-neutral-800 pl-6">Managing Director driving global excellence in Securities Settlements & Equities Operations.</p>
+                                </Reveal>
+                                <Reveal delay={300}>
+                                    <div className="mt-12 flex gap-4">
+                                        <div className="flex items-center gap-2 text-neutral-500 text-sm"><MapPin size={16} /> Bengaluru, India</div>
+                                        <div className="flex items-center gap-2 text-neutral-500 text-sm ml-4"><Globe size={16} /> Global Head</div>
+                                    </div>
+                                </Reveal>
+                            </div>
+                            <div className="order-1 lg:order-2 flex justify-center lg:justify-end">
+                                <Reveal delay={400} className="w-full max-w-md">
+                                    <div className="relative group aspect-[4/5] overflow-hidden bg-neutral-900 shadow-2xl shadow-blue-900/10">
+                                        <div className="absolute inset-0 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none bg-gradient-to-t from-blue-900/40 to-transparent mix-blend-overlay"></div>
+                                        <img src="Parikshitgupta.jpg" alt="Parikshit Gupta" className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-105 filter grayscale contrast-110 group-hover:grayscale-0" 
+                                        onError={(e) => { e.target.onerror = null; e.target.style.display = 'none'; e.target.parentNode.style.backgroundColor = '#1a1a1a'; }}/>
+                                    </div>
+                                </Reveal>
+                            </div>
+                        </div>
+                        <div className="absolute bottom-8 left-6 md:left-12 text-white/20 animate-bounce"><ChevronDown size={24} /></div>
+                    </section>
+                );
+            };
+
+            const Marquee = () => {
+                return (
+                    <div className="w-full bg-white text-black py-8 overflow-hidden flex items-center whitespace-nowrap border-y border-neutral-200">
+                        <div className="animate-marquee flex gap-12 text-5xl md:text-8xl font-bold tracking-tighter uppercase opacity-90">
+                            <span>Strategic Operations</span><span className="text-stroke">•</span><span>Global Leadership</span><span className="text-stroke">•</span><span>Securities Settlements</span><span className="text-stroke">•</span><span>India Head</span>
+                        </div>
+                    </div>
+                );
+            };
+
+            const Experience = () => {
+                return (
+                    <section id="experience" className="py-32 px-6 md:px-12 bg-neutral-950 text-white">
+                        <div className="max-w-6xl mx-auto">
+                            <Reveal>
+                                <div className="flex items-baseline gap-4 mb-20 border-b border-white/10 pb-6">
+                                    <span className="text-xs font-mono text-blue-500 font-bold">01</span>
+                                    <h2 className="text-4xl md:text-6xl font-light tracking-tight text-white">Professional Experience</h2>
+                                </div>
+                            </Reveal>
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-12">
+                                <div className="md:col-span-4 hidden md:block">
+                                    <div className="sticky top-32">
+                                        <Reveal delay={100}>
+                                            <h3 className="text-2xl font-medium mb-2">Goldman Sachs</h3>
+                                            <p className="text-neutral-500 mb-6 text-sm uppercase tracking-wider">Current Role</p>
+                                        </Reveal>
+                                    </div>
+                                </div>
+                                <div className="md:col-span-8 space-y-24">
+                                    <Reveal>
+                                        <div className="group">
+                                            <h4 className="text-4xl md:text-5xl font-light mb-4 group-hover:text-blue-400 transition-colors">Managing Director</h4>
+                                            <p className="text-xl text-neutral-500 mb-6">Global Head of Securities Settlements Operations</p>
+                                            <p className="text-neutral-400 text-lg leading-relaxed border-l-2 border-white/10 pl-6 group-hover:border-blue-500 transition-colors duration-500">Spearheading global strategies for securities settlements. Responsible for ensuring operational efficiency, mitigating risk, and driving transformative growth across international markets.</p>
+                                        </div>
+                                    </Reveal>
+                                    <Reveal delay={100}>
+                                        <div className="group">
+                                            <h4 className="text-4xl md:text-5xl font-light mb-4 group-hover:text-blue-400 transition-colors">India Head</h4>
+                                            <p className="text-xl text-neutral-500 mb-6">Equities Operations</p>
+                                            <p className="text-neutral-400 text-lg leading-relaxed border-l-2 border-white/10 pl-6 group-hover:border-blue-500 transition-colors duration-500">Leading the India Equities Operations division, aligning regional execution with global mandates. Managing large-scale teams and overseeing complex financial operational frameworks in Bengaluru.</p>
+                                        </div>
+                                    </Reveal>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                );
+            };
+
+            const Education = () => {
+                return (
+                    <section className="py-24 px-6 md:px-12 bg-neutral-900 text-white relative overflow-hidden">
+                        <div className="max-w-6xl mx-auto relative z-10">
+                            <div className="grid md:grid-cols-2 gap-12 items-center">
+                                <Reveal>
+                                    <div>
+                                        <span className="text-blue-500 font-mono text-sm mb-4 block">02 — EDUCATION</span>
+                                        <h2 className="text-4xl md:text-5xl font-light mb-8">Academic Foundation</h2>
+                                    </div>
+                                </Reveal>
+                                <Reveal delay={200}>
+                                    <a href="https://christuniversity.in/" target="_blank" rel="noopener noreferrer" className="block bg-neutral-950 p-8 md:p-12 border border-white/5 hover:border-blue-500/50 transition-colors duration-500 group cursor-pointer">
+                                        <div className="flex items-start justify-between">
+                                            <div>
+                                                <h3 className="text-3xl font-medium mb-2 group-hover:text-white transition-colors text-neutral-200">Christ University</h3>
+                                                <p className="text-neutral-400">2004 - 2007</p>
+                                            </div>
+                                            <div className="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all duration-300 group-hover:scale-110">
+                                                <ArrowUpRight size={24} />
+                                            </div>
+                                        </div>
+                                    </a>
+                                </Reveal>
+                            </div>
+                        </div>
+                    </section>
+                );
+            };
+
+            const Contact = () => {
+                return (
+                    <section id="contact" className="py-32 px-6 md:px-12 bg-neutral-950 text-white border-t border-white/5">
+                        <div className="max-w-4xl mx-auto text-center">
+                            <Reveal>
+                                <h2 className="text-5xl md:text-8xl font-semibold tracking-tighter mb-8">Let's create impact.</h2>
+                            </Reveal>
+                            <Reveal delay={200}>
+                                <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                                    <button className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-white text-black text-lg font-medium hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-1">
+                                        <Mail size={20} /> Get in touch
+                                    </button>
+                                    <a href="https://www.linkedin.com/in/parikshit-gupta-44480357/" target="_blank" className="w-full sm:w-auto flex items-center justify-center gap-3 px-8 py-4 bg-transparent border border-white/20 text-white text-lg font-medium hover:bg-white/10 transition-all duration-300">
+                                        <Linkedin size={20} /> LinkedIn
+                                    </a>
+                                </div>
+                            </Reveal>
+                        </div>
+                    </section>
+                );
+            };
+
+            const Footer = () => (
+                <footer className="py-8 px-6 text-center text-neutral-600 text-sm bg-neutral-950 flex justify-between max-w-7xl mx-auto border-t border-white/5 mt-12">
+                    <span className="font-mono">© 2026 PG.</span>
+                    <span className="flex items-center gap-2">Bengaluru <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span></span>
+                </footer>
+            );
+
+            const App = () => {
+                return (
+                    <div className="font-sans antialiased bg-neutral-950 min-h-screen selection:bg-blue-500 selection:text-white">
+                        <Navbar />
+                        <Hero />
+                        <Marquee />
+                        <Experience />
+                        <Education />
+                        <Contact />
+                        <Footer />
+                    </div>
+                );
+            };
+
+            const root = ReactDOM.createRoot(document.getElementById('root'));
+            root.render(<App />);
+        
+        } catch (error) {
+            document.body.innerHTML = '<div style="color:red; font-size: 20px; padding: 50px;">JavaScript Error: ' + error.message + '</div>';
+            console.error(error);
+        }
+    </script>
+</body>
+</html>
